@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">YandexMapApiExample</string>
+    <string name="btn_sort">Сортировать</string>
 </resources>
