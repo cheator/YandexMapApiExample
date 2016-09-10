@@ -6,13 +6,10 @@ import ru.yandex.yandexmapkit.map.GeoCodeListener;
 import ru.yandex.yandexmapkit.overlay.Overlay;
 import ru.yandex.yandexmapkit.utils.ScreenPoint;
 
-/**
- * Created by cheat on 08.09.2016.
- */
+
 public class GeoCodeOverlay extends Overlay implements GeoCodeListener {
 
     GeocodeCallBack _cb;
-    //private List<YaPoint> arrPoints = new ArrayList<>();
 
     private YaPoint point = null ;
     public GeoCodeOverlay(MapController mapController , GeocodeCallBack cb) {
@@ -27,7 +24,7 @@ public class GeoCodeOverlay extends Overlay implements GeoCodeListener {
                 @Override
                 public void run() {
 
-                    SingleList.addPoint( new YaPoint(  geoCode.getDisplayName() , geoCode.getGeoPoint()));
+                    SingleList.addPoint( geoCode.getDisplayName() , geoCode.getGeoPoint());
                     _cb.onFinish();
                 }
             });
