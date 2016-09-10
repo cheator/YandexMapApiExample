@@ -1,7 +1,5 @@
 package ru.devcheat.YandexMapApiExample;
 
-import android.widget.Toast;
-
 import ru.yandex.yandexmapkit.MapController;
 import ru.yandex.yandexmapkit.map.GeoCode;
 import ru.yandex.yandexmapkit.map.GeoCodeListener;
@@ -13,8 +11,13 @@ import ru.yandex.yandexmapkit.utils.ScreenPoint;
  */
 public class GeoCodeOverlay extends Overlay implements GeoCodeListener {
 
-    public GeoCodeOverlay(MapController mapController) {
+    GeocodeCallBack _cb;
+    //private List<YaPoint> arrPoints = new ArrayList<>();
+
+    private YaPoint point = null ;
+    public GeoCodeOverlay(MapController mapController , GeocodeCallBack cb) {
         super(mapController);
+        _cb = cb;
     }
 
     @Override
@@ -23,10 +26,9 @@ public class GeoCodeOverlay extends Overlay implements GeoCodeListener {
             getMapController().getMapView().post(new Runnable() {
                 @Override
                 public void run() {
-                    // show display name of the point
-                    Toast.makeText(getMapController().getContext(),
-                            geoCode.getDisplayName(), Toast.LENGTH_LONG).show();
 
+                    SingleList.addPoint( new YaPoint(  geoCode.getDisplayName() , geoCode.getGeoPoint()));
+                    _cb.onFinish();
                 }
             });
         }
@@ -44,4 +46,5 @@ public class GeoCodeOverlay extends Overlay implements GeoCodeListener {
     public int compareTo(Object o) {
         return 0;
     }
+
 }
