@@ -31,7 +31,13 @@ public  class SingleList {
         // this.records = SingleList.getPoints();
         points.remove(point);
 
+    }
+    public static String getText(int position){
 
+        return points.get(position).get_adress();
+    }
+    public static void setText (int position , String adress){
+        points.get(position).set_adress(adress);
     }
 
 

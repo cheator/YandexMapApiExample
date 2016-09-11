@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">YandexMapApiExample</string>
     <string name="btn_sort">Сортировать</string>
+    <string name="yes">Сохранить</string>
+    <string name="no">Отменить</string>
+    <string name="EditTextTitle">Изменение адреса</string>
+
 </resources>

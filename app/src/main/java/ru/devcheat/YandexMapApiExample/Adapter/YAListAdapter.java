@@ -39,6 +39,10 @@ public class YAListAdapter extends BaseAdapter  {
         }
 
     }
+    public void edit (int position , String adress){
+        SingleList.setText(position , adress);
+        notifyDataSetChanged();
+    }
     public void remove (int position){
         // this.records = SingleList.getPoints();
 
