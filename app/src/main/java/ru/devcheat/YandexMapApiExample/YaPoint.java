@@ -2,7 +2,9 @@ package ru.devcheat.YandexMapApiExample;
 
 import ru.yandex.yandexmapkit.utils.GeoPoint;
 
-
+/**
+ * Обьект с точкой.
+ */
 public class YaPoint {
     private String _adress;
     private GeoPoint _point;
