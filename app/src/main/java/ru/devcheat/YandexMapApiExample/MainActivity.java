@@ -15,40 +15,35 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import ru.devcheat.YandexMapApiExample.Adapter.YAListAdapter;
 import ru.yandex.yandexmapkit.MapController;
 import ru.yandex.yandexmapkit.MapView;
 import ru.yandex.yandexmapkit.OverlayManager;
-import ru.yandex.yandexmapkit.map.GeoCode;
 import ru.yandex.yandexmapkit.overlay.Overlay;
 import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
-import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
-import ru.yandex.yandexmapkit.utils.GeoPoint;
 
-public class MainActivity extends AppCompatActivity implements  View.OnClickListener   {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int CM_DELETE_ID = -1;
     private static final int CM_EDIT_ID = -2;
 
-    private MapView map ;
+    private MapView map;
     OverlayManager mOverlayManager;
     MapController mMapController;
     Overlay overlay;
-    Button btnSearch_index,btnSearch_adress ;
-    GeocodeCallBack _cb ;
+    Button btnSearch_index, btnSearch_adress;
+    GeocodeCallBack _cb;
     ListView lv;
     YAListAdapter yaAdapter;
-    Map<YaPoint , BalloonItem>  balloons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = (ListView) findViewById(R.id.listView);
-        mapwork();
+        mapInit();
         init();
     }
 
@@ -57,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         btnSearch_adress = (Button) findViewById(R.id.btnSort_adress);
         btnSearch_adress.setOnClickListener(this);
         btnSearch_index.setOnClickListener(this);
-
 
 
         yaAdapter = new YAListAdapter(MainActivity.this);
@@ -69,22 +63,20 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 reloadMapObjects();
                 mMapController.setPositionAnimationTo(SingleList.getPointByIndex(i).get_point());
-                SingleList.getPointByIndex(i).marker.setDrawable( getResources().getDrawable(R.drawable.nav_act));
-
+                SingleList.getPointByIndex(i).marker.setDrawable(getResources().getDrawable(R.drawable.nav_act));
                 mMapController.notifyRepaint();
             }
         });
     }
 
 
-    private void mapwork() {
+    private void mapInit() {
         // Load required resources
         Resources res = getResources();
-        byte MainPriority  = 1;
+        byte MainPriority = 1;
         map = (MapView) findViewById(R.id.map);
         mMapController = map.getMapController();
         mOverlayManager = mMapController.getOverlayManager();
-        // Disable determining the user's location
         mOverlayManager.getMyLocation().setEnabled(true);
         overlay = new Overlay(mMapController);
         overlay.setPriority(MainPriority);
@@ -98,33 +90,33 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         };
 
 
-        GeoCodeOverlay geo =  new GeoCodeOverlay(map.getMapController(),_cb);
-        byte GeoPriority  = 2;
+        GeoCodeOverlay geo = new GeoCodeOverlay(map.getMapController(), _cb);
+        byte GeoPriority = 2;
         geo.setPriority(GeoPriority);
         mOverlayManager.addOverlay(geo);
 
     }
-    private void addPoints( ){
+
+    private void addPoints() {
 
         yaAdapter.add();
-        reloadMapObjects ();
+        reloadMapObjects();
 
     }
 
-    private void reloadMapObjects (  ){
-        ArrayList<YaPoint> points =   SingleList.getPoints();
+    private void reloadMapObjects() {
+        ArrayList<YaPoint> points = SingleList.getPoints();
 
         Resources res = getResources();
-        BalloonItem balloonForPointL = null;
         overlay.clearOverlayItems();
-       // Overlay overlay = new Overlay(mMapController);
-        for (YaPoint point  : points){
+
+        for (YaPoint point : points) {
 
             // Create an object for the layer
-            OverlayItem marker = new OverlayItem(point.get_point() , res.getDrawable(R.drawable.nav_sleep));
-            BalloonItem balloonForPoint = new BalloonItem(this, point.get_point() );
+            OverlayItem marker = new OverlayItem(point.get_point(), res.getDrawable(R.drawable.nav_sleep));
+            BalloonItem balloonForPoint = new BalloonItem(this, point.get_point());
             balloonForPoint.setVisible(true);
-            balloonForPoint.setText(point.get_index()+" "+point.get_adress());
+            balloonForPoint.setText(point.get_index() + " " + point.get_adress());
 
             marker.setBalloonItem(balloonForPoint);
             overlay.addOverlayItem(marker);
@@ -144,16 +136,16 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, CM_DELETE_ID, 0, "Удалить запись");
-        menu.add(1 ,CM_EDIT_ID , 0 ,"Редактировать адрес" );
+        menu.add(1, CM_EDIT_ID, 0, "Редактировать адрес");
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case CM_DELETE_ID:
                 yaAdapter.remove(acmi.position);
-                reloadMapObjects ();
+                reloadMapObjects();
                 break;
 
             case CM_EDIT_ID:
@@ -175,11 +167,10 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         final EditText editText = (EditText) promptView.findViewById(R.id.etAdress);
         editText.setText(SingleList.getText(pos));
 
-        // setup a dialog window
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        yaAdapter.edit( position , editText.getText().toString());
+                        yaAdapter.edit(position, editText.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancel",
@@ -189,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
                             }
                         });
 
-        // create an alert dialog
+
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
@@ -197,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btnSort_adress:
                 SingleList.sortAdress();
                 yaAdapter.notifyDataSetChanged();
