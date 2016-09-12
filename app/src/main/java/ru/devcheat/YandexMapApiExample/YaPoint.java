@@ -1,5 +1,6 @@
 package ru.devcheat.YandexMapApiExample;
 
+import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
 
 /**
@@ -8,6 +9,7 @@ import ru.yandex.yandexmapkit.utils.GeoPoint;
 public class YaPoint {
     private String _adress;
     private GeoPoint _point;
+    public OverlayItem marker = null;
 
     private int _index = 0;
 
@@ -72,4 +74,6 @@ public class YaPoint {
 
         return true;
     }
+
+
 }

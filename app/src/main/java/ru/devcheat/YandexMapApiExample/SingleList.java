@@ -3,6 +3,8 @@ package ru.devcheat.YandexMapApiExample;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import ru.yandex.yandexmapkit.utils.GeoPoint;
 
@@ -14,6 +16,7 @@ public  class SingleList {
 
     private static ArrayList<YaPoint> points  = new ArrayList<>();
     private static int _index = 0;
+    private static Comparator itemComparator = null;
     private SingleList (){
 
     }
@@ -36,9 +39,36 @@ public  class SingleList {
 
         return points.get(position).get_adress();
     }
+    public static YaPoint getPointByIndex (int i){
+        return  points.get(i);
+    }
+
+
     public static void setText (int position , String adress){
         points.get(position).set_adress(adress);
     }
+
+
+    public static void sortIndex (){
+        itemComparator = new Comparator<YaPoint>() {
+            @Override
+            public int compare(YaPoint a, YaPoint b) {
+                return a.get_index() - b.get_index();
+            }
+        };
+        Collections.sort(points , itemComparator);
+    }
+    public static void sortAdress (){
+        itemComparator = new Comparator<YaPoint>() {
+            @Override
+            public int compare(YaPoint a, YaPoint b) {
+                return a.get_adress().compareTo( b.get_adress());
+            }
+        };
+        Collections.sort(points , itemComparator);
+    }
+
+
 
 
 

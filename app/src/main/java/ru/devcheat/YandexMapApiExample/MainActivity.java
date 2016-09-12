@@ -21,12 +21,14 @@ import ru.devcheat.YandexMapApiExample.Adapter.YAListAdapter;
 import ru.yandex.yandexmapkit.MapController;
 import ru.yandex.yandexmapkit.MapView;
 import ru.yandex.yandexmapkit.OverlayManager;
+import ru.yandex.yandexmapkit.map.GeoCode;
 import ru.yandex.yandexmapkit.overlay.Overlay;
 import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
 import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
+import ru.yandex.yandexmapkit.utils.GeoPoint;
 
-public class MainActivity extends AppCompatActivity implements OnBalloonListener {
+public class MainActivity extends AppCompatActivity implements  View.OnClickListener   {
 
     private static final int CM_DELETE_ID = -1;
     private static final int CM_EDIT_ID = -2;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnBalloonListener
     OverlayManager mOverlayManager;
     MapController mMapController;
     Overlay overlay;
-    Button btnSearch;
+    Button btnSearch_index,btnSearch_adress ;
     GeocodeCallBack _cb ;
     ListView lv;
     YAListAdapter yaAdapter;
@@ -51,36 +53,28 @@ public class MainActivity extends AppCompatActivity implements OnBalloonListener
     }
 
     private void init() {
-        btnSearch = (Button) findViewById(R.id.btnSort);
+        btnSearch_index = (Button) findViewById(R.id.btnSort_index);
+        btnSearch_adress = (Button) findViewById(R.id.btnSort_adress);
+        btnSearch_adress.setOnClickListener(this);
+        btnSearch_index.setOnClickListener(this);
 
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                reloadMapObjects ();
 
-            }
-        });
 
         yaAdapter = new YAListAdapter(MainActivity.this);
         lv.setAdapter(yaAdapter);
         registerForContextMenu(lv);
-        /*
-        lv.setOnLongClickListener(new View.OnLongClickListener() {
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                reloadMapObjects();
+                mMapController.setPositionAnimationTo(SingleList.getPointByIndex(i).get_point());
+                SingleList.getPointByIndex(i).marker.setDrawable( getResources().getDrawable(R.drawable.nav_act));
 
-
-                return false;
+                mMapController.notifyRepaint();
             }
         });
-        */
-
-
     }
-
-
-
-
 
 
     private void mapwork() {
@@ -98,10 +92,8 @@ public class MainActivity extends AppCompatActivity implements OnBalloonListener
         mOverlayManager.addOverlay(overlay);
         _cb = new GeocodeCallBack() {
             @Override
-            public boolean onFinish() {
-
+            public void onFinish() {
                 addPoints();
-                return true;
             }
         };
 
@@ -122,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements OnBalloonListener
     private void reloadMapObjects (  ){
         ArrayList<YaPoint> points =   SingleList.getPoints();
 
-
         Resources res = getResources();
         BalloonItem balloonForPointL = null;
         overlay.clearOverlayItems();
@@ -131,23 +122,20 @@ public class MainActivity extends AppCompatActivity implements OnBalloonListener
 
             // Create an object for the layer
             OverlayItem marker = new OverlayItem(point.get_point() , res.getDrawable(R.drawable.nav_sleep));
-            // Create the balloon model for the object
             BalloonItem balloonForPoint = new BalloonItem(this, point.get_point() );
             balloonForPoint.setVisible(true);
             balloonForPoint.setText(point.get_index()+" "+point.get_adress());
-            balloonForPoint.setOnBalloonListener(this);
 
-            // Add the balloon model to the object
             marker.setBalloonItem(balloonForPoint);
-            // Add the object to the layer
             overlay.addOverlayItem(marker);
-
+            overlay.setVisible(true);
+            point.marker = marker;
 
         }
 
         mOverlayManager.addOverlay(overlay);
-
         mMapController.notifyRepaint();
+
 
     }
 
@@ -206,30 +194,22 @@ public class MainActivity extends AppCompatActivity implements OnBalloonListener
         alert.show();
     }
 
-    @Override
-    public void onBalloonViewClick(BalloonItem balloonItem, View view) {
-       // OverlayItem item = balloonItem.getOverlayItem();
-
-        //Toast.makeText(MainActivity.this, balloonItem.getText(), Toast.LENGTH_SHORT).show();
-    }
 
     @Override
-    public void onBalloonShow(BalloonItem balloonItem) {
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btnSort_adress:
+                SingleList.sortAdress();
+                yaAdapter.notifyDataSetChanged();
+                reloadMapObjects();
+                break;
+            case R.id.btnSort_index:
+                SingleList.sortIndex();
+                yaAdapter.notifyDataSetChanged();
+                reloadMapObjects();
+                break;
 
-    }
-
-    @Override
-    public void onBalloonHide(BalloonItem balloonItem) {
-
-    }
-
-    @Override
-    public void onBalloonAnimationStart(BalloonItem balloonItem) {
-
-    }
-
-    @Override
-    public void onBalloonAnimationEnd(BalloonItem balloonItem) {
+        }
 
     }
 }
