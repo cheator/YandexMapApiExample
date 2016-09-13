@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ import ru.yandex.yandexmapkit.OverlayManager;
 import ru.yandex.yandexmapkit.overlay.Overlay;
 import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
+import ru.yandex.yandexmapkit.utils.GeoPoint;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     OverlayManager mOverlayManager;
     MapController mMapController;
     Overlay overlay;
-    Button btnSearch_index, btnSearch_adress;
+    Button btnSearch_index, btnSearch_adress , btnSearch_distance;
     GeocodeCallBack _cb;
     ListView lv;
     YAListAdapter yaAdapter;
@@ -50,8 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init() {
         btnSearch_index = (Button) findViewById(R.id.btnSort_index);
         btnSearch_adress = (Button) findViewById(R.id.btnSort_adress);
+        btnSearch_distance = (Button) findViewById(R.id.btnSort_distance);
         btnSearch_adress.setOnClickListener(this);
         btnSearch_index.setOnClickListener(this);
+        btnSearch_distance.setOnClickListener(this);
 
 
         yaAdapter = new YAListAdapter(MainActivity.this);
@@ -64,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 reloadMapObjects();
                 mMapController.setPositionAnimationTo(SingleList.getPointByIndex(i).get_point());
                 SingleList.getPointByIndex(i).marker.setDrawable(getResources().getDrawable(R.drawable.nav_act));
+              if ((int) SingleList.getPointByIndex(i).getDistanse() > 0 ){
+                    Toast.makeText(MainActivity.this , " До точки "+ (int) SingleList.getPointByIndex(i).getDistanse() +" метров" , Toast.LENGTH_SHORT).show();
+                }
                 mMapController.notifyRepaint();
             }
         });
@@ -78,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mMapController = map.getMapController();
         mOverlayManager = mMapController.getOverlayManager();
         mOverlayManager.getMyLocation().setEnabled(true);
+
         overlay = new Overlay(mMapController);
         overlay.setPriority(MainPriority);
 
@@ -117,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BalloonItem balloonForPoint = new BalloonItem(this, point.get_point());
             balloonForPoint.setVisible(true);
             balloonForPoint.setText(point.get_index() + " " + point.get_adress());
-
             marker.setBalloonItem(balloonForPoint);
             overlay.addOverlayItem(marker);
             overlay.setVisible(true);
@@ -128,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mOverlayManager.addOverlay(overlay);
         mMapController.notifyRepaint();
 
+        if ( mOverlayManager.getMyLocation().getMyLocationItem() != null){
+            SingleList.addDistance(mOverlayManager.getMyLocation().getMyLocationItem().getGeoPoint());
+            btnSearch_distance.setEnabled(true);
+        }else{
+            btnSearch_distance.setEnabled(false);
+        }
 
     }
 
@@ -179,8 +192,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 dialog.cancel();
                             }
                         });
-
-
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
@@ -199,8 +210,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 yaAdapter.notifyDataSetChanged();
                 reloadMapObjects();
                 break;
-
+            case R.id.btnSort_distance:
+                SingleList.sortDistance();
+                yaAdapter.notifyDataSetChanged();
+                reloadMapObjects();
+                break;
         }
-
     }
 }

@@ -6,5 +6,6 @@
     <string name="EditTextTitle">Изменение адреса</string>
     <string name="btn_sort_adress">Сортировать по адресу</string>
     <string name="btn_sort_index">Сортировать по индексу</string>
+    <string name="btn_sort_distance">сортировать по растоянию</string>
 
 </resources>

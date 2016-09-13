@@ -20,7 +20,7 @@ import ru.devcheat.YandexMapApiExample.SingleList;
 import ru.devcheat.YandexMapApiExample.YaPoint;
 
 
-public class YAListAdapter extends BaseAdapter  {
+public class YAListAdapter extends BaseAdapter {
     Context ctx;
     LayoutInflater lInflater;
     ArrayList<YaPoint> objects;
@@ -31,19 +31,22 @@ public class YAListAdapter extends BaseAdapter  {
         lInflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-    public void add (){
+
+    public void add() {
         this.objects = SingleList.getPoints();
 
-        if (objects.size()>0 ){
+        if (objects.size() > 0) {
             notifyDataSetChanged();
         }
 
     }
-    public void edit (int position , String adress){
-        SingleList.setText(position , adress);
+
+    public void edit(int position, String adress) {
+        SingleList.setText(position, adress);
         notifyDataSetChanged();
     }
-    public void remove (int position){
+
+    public void remove(int position) {
         // this.records = SingleList.getPoints();
 
         SingleList.remove(objects.get(position));
@@ -51,43 +54,34 @@ public class YAListAdapter extends BaseAdapter  {
 
     }
 
-    // кол-во элементов
     @Override
     public int getCount() {
         return objects.size();
     }
 
-    // элемент по позиции
     @Override
     public Object getItem(int position) {
         return objects.get(position);
     }
 
-    // id по позиции
     @Override
     public long getItemId(int position) {
         return position;
     }
 
-    // пункт списка
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // используем созданные, но не используемые view
         View view = convertView;
         if (view == null) {
             view = lInflater.inflate(R.layout.point_item, parent, false);
         }
 
         YaPoint p = getPoint(position);
-
-        // заполняем View в пункте списка данными из товаров: наименование, цена
-        // и картинка
-        ((TextView) view.findViewById(R.id.tvInd)).setText(p.get_index()+"");
+        ((TextView) view.findViewById(R.id.tvInd)).setText(p.get_index() + "");
         ((TextView) view.findViewById(R.id.tvAdress)).setText(p.get_adress());
 
         ImageView nav = (ImageView) view.findViewById(R.id.ivImg);
         nav.setTag(position);
-
 
         nav.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,13 +98,9 @@ public class YAListAdapter extends BaseAdapter  {
                     intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse("market://details?id=ru.yandex.yandexnavi"));
                 } else {
-                   // intent.putExtra("lat_from", 55.751802);
-                   // intent.putExtra("lon_from", 37.586684);
                     intent.putExtra("lat_to", p.get_point().getLat());
                     intent.putExtra("lon_to", p.get_point().getLon());
                 }
-
-                // Запускаем нужную Activity
                 ctx.startActivity(intent);
             }
         });
@@ -121,8 +111,6 @@ public class YAListAdapter extends BaseAdapter  {
     YaPoint getPoint(int position) {
         return ((YaPoint) getItem(position));
     }
-
-
 
 
 }

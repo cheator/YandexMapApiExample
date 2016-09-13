@@ -33,7 +33,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_weight="10"
+                    android:textSize="10dp"
                     android:text="@string/btn_sort_adress" />
 
                 <Button
@@ -41,8 +42,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_weight="10"
+                    android:textSize="10dp"
                     android:text="@string/btn_sort_index" />
+                <Button
+                    android:id="@+id/btnSort_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="10"
+                    android:textSize="10dp"
+                    android:text="@string/btn_sort_distance" />
             </LinearLayout>
 
             <ListView

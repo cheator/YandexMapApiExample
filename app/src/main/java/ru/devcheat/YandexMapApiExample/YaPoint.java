@@ -10,7 +10,7 @@ public class YaPoint {
     private String _adress;
     private GeoPoint _point;
     public OverlayItem marker = null;
-
+    private double distanse  = Double.NaN;
     private int _index = 0;
 
     public YaPoint(int index, String adress, GeoPoint point) {
@@ -23,9 +23,17 @@ public class YaPoint {
         this._adress = _adress;
     }
 
-
     public void set_point(GeoPoint _point) {
         this._point = _point;
+    }
+
+
+    public double getDistanse() {
+        return distanse;
+    }
+
+    public void setDistanse(GeoPoint from) {
+        this.distanse = MapsUtils.computeDistanceBetween(from , this._point);
     }
 
     public String get_adress() {
